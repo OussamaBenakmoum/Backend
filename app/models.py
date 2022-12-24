@@ -1,4 +1,5 @@
-from app import db, ma
+from app import db, ma, app
+from datetime import datetime, date
 
 class Account(db.Model) :
     id = db.Column(db.Integer(), primary_key = True)
@@ -7,19 +8,64 @@ class Account(db.Model) :
     password = db.Column(db.String(100), nullable = False, unique = False)
     phone = db.Column(db.String(100), nullable = False)
     wilaya = db.Column(db.String(100), nullable = False)
-    region = db.Column(db.String(100), nullable = False)
     photo = db.Column(db.String(100), nullable = False)
+    posts = db.relationship('Post', backref='owned_user')
     
     
-    def __init__(self, username, email, password, phone, wilaya, region, photo):
+    def __init__(self, username, email, password, phone, wilaya, photo):
         self.username = username
         self.email = email
         self.password = password
         self.phone = phone
         self.wilaya = wilaya
-        self.region = region 
         self.photo = photo
         
 class AccountSchema(ma.Schema) :
     class Meta : 
-        fields = ('id','username','email','password','phone','wilaya','region','photo')  
+        fields = ('id','username','email','password','phone','wilaya','photo')  
+        
+with app.app_context() : 
+    db.drop_all()
+    db.create_all()
+
+
+class Post(db.Model) :
+    id = db.Column(db.Integer(), primary_key = True)
+    name = db.Column(db.String(190), nullable = False)
+    year = db.Column(db.Integer(), nullable = False)
+    price = db.Column(db.Integer(), nullable = False)
+    km_driven = db.Column(db.Integer(), nullable = False)
+    fuel = db.Column(db.String(30), nullable = False)
+    seller_type = db.Column(db.String(30), nullable = False)
+    transmission = db.Column(db.String(30), nullable = False)
+    mileage = db.Column(db.Float(), nullable = False)
+    engin = db.Column(db.Integer(), nullable = False)
+    max_power = db.Column(db.Float(), nullable = False)
+    torque = db.Column(db.String(100), nullable = False)
+    seats = db.Column(db.Integer(), nullable = False)
+    # deposit_date = db.Column(db.DateTime(), default = date.today().strftime("%Y-%m-%d"))
+    owner_id = db.Column(db.Integer, db.ForeignKey('account.id'),nullable=False)
+    
+    def __init__(self, name, year, price, km_driven, fuel, seller_type, transmission, mileage, engin, max_power, torque, seats, owner_id) : 
+        self.name = name
+        self.year = year
+        self.price = price
+        self.km_driven = km_driven
+        self.fuel = fuel
+        self.seller_type = seller_type
+        self.transmission = transmission
+        self.mileage = mileage
+        self.engin = engin
+        self.max_power = max_power
+        self.torque = torque
+        self.seats = seats
+        # self.deposit_date = deposit_date
+        self.owner_id = owner_id
+
+with app.app_context() : 
+    db.drop_all()
+    db.create_all()
+
+class PostSchema(ma.Schema) :
+    class Meta : 
+        fields = ('id','name', 'year', 'price', 'km_driven', 'fuel', 'seller_type', 'transmission', 'mileage', 'engin', 'max_power', 'torque', 'seats', 'owner_id')  

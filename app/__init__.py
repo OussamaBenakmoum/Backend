@@ -10,4 +10,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
 ma = Marshmallow(app)  
 
+with app.app_context() : 
+    db.create_all()
+
 from app import routes
