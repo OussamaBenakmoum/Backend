@@ -69,4 +69,6 @@ with app.app_context() :
 
 class PostSchema(ma.Schema) :
     class Meta : 
-        fields = ('id','name', 'year', 'price', 'km_driven', 'fuel', 'seller_type', 'transmission', 'mileage', 'engin', 'max_power', 'torque', 'seats', 'owner_id', 'created_at')  
+        fields = ('id','name', 'year', 'price', 'km_driven', 'fuel', 'seller_type', 'transmission', 'mileage', 'engin', 'max_power', 'torque', 'seats', 'owner_id', 'created_at') 
+        
+
