@@ -98,7 +98,7 @@ def create_post():
     seats = request.json['seats']
     created_at = request.json['created_at']
     
-    post = Post(name, year, price, km_driven, fuel, seller_type, transmission, owner_id, mileage, engin, max_power, torque, seats, created_at)
+    post = Post(name, year, price, km_driven, fuel, seller_type, transmission, mileage, engin, max_power, torque, seats, owner_id,created_at)
     
     db.session.add(post)
     db.session.commit()
@@ -148,6 +148,16 @@ def delete_post(id) :
     db.session.delete(post)
     db.session.commit()
     return account_schema.jsonify(post)
+
+
+
+
+
+@app.get("/account/<id>/posts")
+def get_my_posts(id) :
+    all_my_posts = Post.query.filter_by(owner_id = id)
+    posts = posts_schema.dump(all_my_posts)
+    return jsonify(posts)
 
 
 

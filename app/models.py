@@ -23,10 +23,11 @@ class Account(db.Model) :
 class AccountSchema(ma.Schema) :
     class Meta : 
         fields = ('id','username','email','password','phone','wilaya','photo')  
-        
-# with app.app_context() : 
-#     db.drop_all()
-#     db.create_all()
+
+
+with app.app_context() : 
+    db.drop_all()
+    db.create_all()
 
 
 class Post(db.Model) :
@@ -62,9 +63,9 @@ class Post(db.Model) :
         self.created_at = created_at
         self.owner_id = owner_id
 
-# with app.app_context() : 
-#     db.drop_all()
-#     db.create_all()
+with app.app_context() : 
+    db.drop_all()
+    db.create_all()
 
 class PostSchema(ma.Schema) :
     class Meta : 
