@@ -24,9 +24,9 @@ class AccountSchema(ma.Schema) :
     class Meta : 
         fields = ('id','username','email','password','phone','wilaya','photo')  
         
-with app.app_context() : 
-    db.drop_all()
-    db.create_all()
+# with app.app_context() : 
+#     db.drop_all()
+#     db.create_all()
 
 
 class Post(db.Model) :
@@ -43,10 +43,10 @@ class Post(db.Model) :
     max_power = db.Column(db.Float(), nullable = False)
     torque = db.Column(db.String(100), nullable = False)
     seats = db.Column(db.Integer(), nullable = False)
-    # deposit_date = db.Column(db.DateTime(), default = date.today().strftime("%Y-%m-%d"))
+    created_at = db.Column(db.String(100), default = "date")
     owner_id = db.Column(db.Integer, db.ForeignKey('account.id'),nullable=False)
     
-    def __init__(self, name, year, price, km_driven, fuel, seller_type, transmission, mileage, engin, max_power, torque, seats, owner_id) : 
+    def __init__(self, name, year, price, km_driven, fuel, seller_type, transmission, mileage, engin, max_power, torque, seats, owner_id, created_at) : 
         self.name = name
         self.year = year
         self.price = price
@@ -59,13 +59,13 @@ class Post(db.Model) :
         self.max_power = max_power
         self.torque = torque
         self.seats = seats
-        # self.deposit_date = deposit_date
+        self.created_at = created_at
         self.owner_id = owner_id
 
-with app.app_context() : 
-    db.drop_all()
-    db.create_all()
+# with app.app_context() : 
+#     db.drop_all()
+#     db.create_all()
 
 class PostSchema(ma.Schema) :
     class Meta : 
-        fields = ('id','name', 'year', 'price', 'km_driven', 'fuel', 'seller_type', 'transmission', 'mileage', 'engin', 'max_power', 'torque', 'seats', 'owner_id')  
+        fields = ('id','name', 'year', 'price', 'km_driven', 'fuel', 'seller_type', 'transmission', 'mileage', 'engin', 'max_power', 'torque', 'seats', 'owner_id', 'created_at')  

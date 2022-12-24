@@ -96,13 +96,60 @@ def create_post():
     max_power = request.json['max_power']
     torque = request.json['torque']
     seats = request.json['seats']
-    # deposit_date = request.json['deposit_date']
+    created_at = request.json['created_at']
     
-    post = Post(name, year, price, km_driven, fuel, seller_type, transmission, owner_id, mileage, engin, max_power, torque, seats)
+    post = Post(name, year, price, km_driven, fuel, seller_type, transmission, owner_id, mileage, engin, max_power, torque, seats, created_at)
     
     db.session.add(post)
     db.session.commit()
     return account_schema.jsonify(post)
+
+@app.put("/posts/<id>")
+def update_post(id) :
+    post = Post.query.get(id)
+    print("hna")
+    name = request.json['name']
+    year = request.json['year']
+    price = request.json['price']
+    km_driven = request.json['km_driven']
+    fuel = request.json['fuel']
+    seller_type = request.json['seller_type']
+    transmission = request.json['transmission']
+    owner_id = request.json['owner_id']
+    mileage = request.json['mileage']
+    engin = request.json['engin']
+    max_power = request.json['max_power']
+    torque = request.json['torque']
+    seats = request.json['seats']
+    created_at = request.json['created_at']
+    
+    post.name = name
+    post.year = year
+    post.price = price
+    post.km_driven = km_driven
+    post.fuel = fuel
+    post.seller_type = seller_type
+    post.transmission = transmission
+    post.owner_id = owner_id
+    post.mileage = mileage
+    post.engin = engin
+    post.max_power = max_power
+    post.torque = torque
+    post.seats = seats
+    post.created_at = created_at
+    
+    db.session.commit()
+    return account_schema.jsonify(post)
+
+
+@app.delete("/posts/<id>")
+def delete_post(id) :
+    post = Post.query.get(id)
+    db.session.delete(post)
+    db.session.commit()
+    return account_schema.jsonify(post)
+
+
 
 
 
