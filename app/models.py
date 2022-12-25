@@ -82,6 +82,11 @@ class Like(db.Model) :
     def __init__(self, post_id, account_id) : 
         self.account_id = account_id
         self.post_id = post_id
-        
-
-
+    
+class LikeSchema(ma.Schema) :
+    class Meta : 
+        fields = ('id','post_id', 'account_id')
+    
+# with app.app_context() : 
+#     db.drop_all()
+#     db.create_all()

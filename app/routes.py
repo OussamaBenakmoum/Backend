@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from app import app, db
-from app.models import Account, AccountSchema, PostSchema, Post
+from app.models import Account, AccountSchema, PostSchema, Post, Like, LikeSchema
 import pickle
 from joblib import dump, load
 import pandas as pd
@@ -23,7 +23,6 @@ accounts_schema = AccountSchema(many=True)
 def get_accounts(): 
     all_accounts = Account.query.all()
     accounts = accounts_schema.dump(all_accounts)
-    print(accounts)
     return jsonify(accounts)
 
 
@@ -98,6 +97,10 @@ def delete_user(id) :
 
 
 
+
+
+
+
 post_schema = PostSchema()
 posts_schema = PostSchema(many=True)
 
@@ -163,7 +166,6 @@ def update_post(id) :
     post.torque = torque
     post.seats = seats
     post.created_at = created_at
-    
     db.session.commit()
     return account_schema.jsonify(post)
 
@@ -182,29 +184,87 @@ def delete_post(id) :
     return account_schema.jsonify(post)
 
 
+
+
+
+like_schema = LikeSchema()
+likes_schema = LikeSchema(many=True)
+
+@app.post("/like")
+def like_unlike_post() : 
+    account_id = request.json['account_id']
+    post_id = request.json['post_id']
+    
+    like = Like.query.filter_by(account_id = account_id, post_id = post_id).first()
+    
+    if like:
+        print("afichage")
+        print(like.account_id)
+        db.session.delete(like)
+        db.session.commit()
+        return jsonify({
+            'liked' : False, 
+            'message' : "post is unliked"
+        }), 200
+    else :
+        new_like = Like(post_id, account_id)
+        print("creer un new like")
+        print(new_like.post_id)
+        print(new_like.account_id)
+        db.session.add(new_like)
+        db.session.commit()
+        return like_schema.jsonify(new_like)
+        
+@app.get("/account/<id>/fav_posts")
+def get_my_favorite_posts(id) : 
+    likes = Like.query.filter_by(account_id = id)
+    likes = likes_schema.dump(likes)
+    if len(likes) != 0 : 
+        print("le type de likes")
+        print(type(likes))
+        res_fin = [] 
+        for like in likes : 
+            postes = Post.query.filter_by(id = like['post_id'])
+            likes_temp = likes_schema.dump(postes) 
+            for element in likes_temp : 
+                print(type(element))
+                res_fin.append(element)        
+        return jsonify(res_fin)
+    else : 
+        return jsonify({
+            'message' : "Pas de postes likés"
+        }), 400
+    
+    
+
+
+
+
+
+
+
+
 clf = load("model.pkl")
 
 @app.post("/predict")
 def calcul_prix():
     
-       #annonce = Annonce.query.get(id)
-      year = request.json['year']       
-      engine = request.json['engin']
-      max_power = request.json['max_power']
-      print(year)
-      print(engine)
-      print(max_power)
-      table = [[year, engine , max_power]]
-      prediction_prix =  clf.predict(table)
-      print("le resultat")
-      liste = prediction_prix.tolist()
-      fin = liste[0]
-      print(fin)
-      if prediction_prix : 
-          return jsonify({'prix de prediction' : fin}), 200
-      else : 
-           return jsonify({'message' : "Error lors de prediction"}), 400
-      
+    year = request.json['year']       
+    engine = request.json['engin']
+    max_power = request.json['max_power']
+    print(year)
+    print(engine)
+    print(max_power)
+    table = [[year, engine , max_power]]
+    prediction_prix =  clf.predict(table)
+    print("le resultat")
+    liste = prediction_prix.tolist()
+    fin = liste[0]
+    print(fin)
+    if prediction_prix : 
+        return jsonify({'prix de prediction' : fin}), 200
+    else : 
+        return jsonify({'message' : "Error lors de prediction"}), 400
 
 
 
