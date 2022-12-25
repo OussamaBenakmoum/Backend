@@ -2,7 +2,17 @@ from flask import jsonify, request
 from app import app, db
 from app.models import Account, AccountSchema, PostSchema, Post
 import pickle
-from joblib import load
+from joblib import dump, load
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+import sklearn
+from sklearn.model_selection import train_test_split
+import category_encoders as ce
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.linear_model import LinearRegression
+from tabulate import tabulate
 
 
 
@@ -88,10 +98,6 @@ def delete_user(id) :
 
 
 
-
-
-
-
 post_schema = PostSchema()
 posts_schema = PostSchema(many=True)
 
@@ -162,6 +168,12 @@ def update_post(id) :
     return account_schema.jsonify(post)
 
 
+@app.get("/account/<id>/posts")
+def get_my_posts(id) :
+    all_my_posts = Post.query.filter_by(owner_id = id)
+    posts = posts_schema.dump(all_my_posts)
+    return jsonify(posts)
+
 @app.delete("/posts/<id>")
 def delete_post(id) :
     post = Post.query.get(id)
@@ -170,37 +182,35 @@ def delete_post(id) :
     return account_schema.jsonify(post)
 
 
+clf = load("model.pkl")
+
+@app.post("/predict")
+def calcul_prix():
+    
+       #annonce = Annonce.query.get(id)
+      year = request.json['year']       
+      engine = request.json['engin']
+      max_power = request.json['max_power']
+      print(year)
+      print(engine)
+      print(max_power)
+      table = [[year, engine , max_power]]
+      prediction_prix =  clf.predict(table)
+      print("le resultat")
+      liste = prediction_prix.tolist()
+      fin = liste[0]
+      print(fin)
+      if prediction_prix : 
+          return jsonify({'prix de prediction' : fin}), 200
+      else : 
+           return jsonify({'message' : "Error lors de prediction"}), 400
+      
 
 
 
-@app.get("/account/<id>/posts")
-def get_my_posts(id) :
-    all_my_posts = Post.query.filter_by(owner_id = id)
-    posts = posts_schema.dump(all_my_posts)
-    return jsonify(posts)
 
 
 
-
-
-
-
-
-
-
-
-# clf = load("model.pkl")
-
-# @app.post('/prediction')
-# def calcul():
-#     year = request.json['year']
-#     engine = request.json['engin']
-#     max_power = request.json['max_power']
-#     table = [[year, engine, max_power]]
-#     prediciton_prix = clf.predict(table)
-#     return jsonify({
-#         'valeur predite': prediciton_prix,
-#     })
 
 
 

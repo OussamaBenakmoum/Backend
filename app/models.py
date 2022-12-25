@@ -10,6 +10,7 @@ class Account(db.Model) :
     wilaya = db.Column(db.String(100), nullable = False)
     photo = db.Column(db.String(100), nullable = False)
     posts = db.relationship('Post', backref='owned_user')
+    likes = db.relationship('Like', backref='likes_owned_user')
     
     
     def __init__(self, username, email, password, phone, wilaya, photo):
@@ -46,6 +47,7 @@ class Post(db.Model) :
     seats = db.Column(db.Integer(), nullable = False)
     created_at = db.Column(db.String(100), default = "date")
     owner_id = db.Column(db.Integer, db.ForeignKey('account.id'),nullable=False)
+    likes = db.relationship('Like', backref='likes_owned_post')
     
     def __init__(self, name, year, price, km_driven, fuel, seller_type, transmission, mileage, engin, max_power, torque, seats, owner_id, created_at) : 
         self.name = name
@@ -71,4 +73,15 @@ class PostSchema(ma.Schema) :
     class Meta : 
         fields = ('id','name', 'year', 'price', 'km_driven', 'fuel', 'seller_type', 'transmission', 'mileage', 'engin', 'max_power', 'torque', 'seats', 'owner_id', 'created_at') 
         
+
+class Like(db.Model) : 
+    id = db.Column(db.Integer(), primary_key = True)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'),nullable=False)
+    account_id = db.Column(db.Integer, db.ForeignKey('account.id'),nullable=False)
+    
+    def __init__(self, post_id, account_id) : 
+        self.account_id = account_id
+        self.post_id = post_id
+        
+
 
