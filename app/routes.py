@@ -36,7 +36,27 @@ def create_account():
     db.session.add(account)
     db.session.commit()
     return account_schema.jsonify(account)
+
+@app.post("/login")
+def login_function() :
+    mail_saisi = request.json['email']
+    pass_saisi = request.json['password']
     
+    account = Account.query.filter_by(email = mail_saisi, password = pass_saisi).first()
+    print("ggg")
+    print(type(account))
+    print(account)
+    
+    if account:
+        return jsonify({
+            'message' : "Il existe"
+        }), 200
+    else :
+        return jsonify({
+            'message' : "Il existe pas"
+        }), 400
+
+
 
 @app.put("/accounts/<id>")
 def update_account(id) :
