@@ -87,6 +87,24 @@ class LikeSchema(ma.Schema) :
     class Meta : 
         fields = ('id','post_id', 'account_id')
     
+
+
+# class ReviewProfile(db.Model) :
+#     id = db.Column(db.Integer(), primary_key = True)
+#     account_id = db.Column(db.Integer, db.ForeignKey('acount.id'),nullable=False)
+#     post_id = db.Column(db.Integer, db.ForeignKey('post.id'),nullable=False)
+#     content = db.Column(db.String(100), nullable = False)
+    
+#     def __init__(self, account_id, post_id, content) : 
+#         self.account_id = account_id
+#         self.post_id = post_id
+#         self.content = content
+        
+# class ReviewProfileSchema(ma.Schema) : 
+#     class Meta : 
+#         fields = ('id','account_id', 'post_id','content')
+
+
 # with app.app_context() : 
 #     db.drop_all()
 #     db.create_all()

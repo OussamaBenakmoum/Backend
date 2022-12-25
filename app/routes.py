@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from app import app, db
-from app.models import Account, AccountSchema, PostSchema, Post, Like, LikeSchema
+from app.models import Account, AccountSchema, PostSchema, Post, Like, LikeSchema, ReviewProfile, ReviewProfileSchema
 import pickle
 from joblib import dump, load
 import pandas as pd
